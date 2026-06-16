@@ -6,10 +6,10 @@
 #define N 20
 #define TAMALFABETO 256
 
-typedef char TipoChave[N];
+typedef char TipoPalavra[N];
 typedef unsigned TipoPesos[N][TAMALFABETO];
 typedef struct TipoItem {
-  TipoChave Chave;
+  TipoPalavra Palavra;
   int qnt;
   int idDoc;
 } TipoItem;
@@ -20,19 +20,19 @@ typedef struct TipoCelula {
   TipoApontador Prox;
 } TipoCelula;
 
-typedef struct TipoLista {
+typedef struct ListaEncadeada {
   TipoCelula *Primeiro, *Ultimo;
-} TipoLista;
+} ListaEncadeada;
 
-typedef TipoLista TipoDicionario[M];
+typedef ListaEncadeada TabelaHash[M];
 
-void FLVazia(TipoLista *Lista);
-short Vazia(TipoLista Lista);
+void FLVazia(ListaEncadeada *Hash);
+short Vazia(ListaEncadeada Hash);
 void GeraPesos(TipoPesos p);
-unsigned int h(TipoChave Chave, TipoPesos p);
-void Inicializa(TipoDicionario T);
-TipoApontador Pesquisa(TipoChave Ch, TipoPesos p, TipoDicionario T);
-void Insere(TipoItem x, TipoPesos p, TipoDicionario T);
-void Imp(TipoLista Lista);
-void Imprime(TipoDicionario Tabela);
+unsigned int h(TipoPalavra Palavra, TipoPesos p);
+void Inicializa(TabelaHash T);
+TipoApontador Pesquisa(TipoPalavra Ch, TipoPesos p, TabelaHash T);
+void Insere(TipoItem x, TipoPesos p, TabelaHash T);
+void Imp(ListaEncadeada Hash);
+void Imprime(TabelaHash Tabela);
 void LerPalavra(char *p, int Tam);
