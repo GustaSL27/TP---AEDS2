@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-ola
-=======
 #include "hash.h"
 
 void FLVazia(TipoLista *Lista){
@@ -114,4 +111,3 @@ void LerPalavra(char *p, int Tam){
     da cadeia como ocorre em Pascal.*/
   for(i=j-1;(i>=0 && p[i]==' ');i--) p[i]='\0';
 }
->>>>>>> b39cc30a05bdc844f4c1ddda853be0e969649b96
