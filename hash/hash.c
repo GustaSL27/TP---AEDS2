@@ -15,19 +15,6 @@ void Ins(TipoItem x, TipoLista *Lista){
   Lista->Ultimo->Prox = NULL;
 }  
 
-void Ret(TipoApontador p, TipoLista *Lista, TipoItem *Item){
-  /* -- Obs.: o item a ser retirado o seguinte ao apontado por p -- */
-  TipoApontador q;
-  if (Vazia(*Lista) || p == NULL || p->Prox == NULL) 
-  { printf(" Erro Lista vazia ou posicao nao existe\n");
-    return;
-  }
-  q = p->Prox; *Item = q->Item; p->Prox = q->Prox;
-  if (p->Prox == NULL)
-  Lista->Ultimo = p;
-  free(q);
-}
-
 void GeraPesos(TipoPesos p){
   /* Gera valores randomicos entre 1 e 10.000 */
   int i, j;
@@ -40,7 +27,7 @@ void GeraPesos(TipoPesos p){
       p[i][j] = 1 + (int)(10000.0 * rand() / (RAND_MAX + 1.0));
 }
 
-TipoIndice h(TipoChave Chave, TipoPesos p){
+unsigned int h(TipoChave Chave, TipoPesos p){
   int i; unsigned int Soma = 0; 
   int comp = strlen(Chave);
   for (i = 0; i < comp; i++) Soma += p[i][(unsigned int)Chave[i]];
@@ -53,8 +40,8 @@ void Inicializa(TipoDicionario T){
 }
 
 TipoApontador Pesquisa(TipoChave Ch, TipoPesos p, TipoDicionario T){
-  /* Obs.: TipoApontador de retorno aponta para o item anterior da lista */
-  TipoIndice i;
+  /* TipoApontador de retorno aponta para o item anterior da lista */
+  unsigned int i;
   TipoApontador Ap;
   i = h(Ch, p);
   if (Vazia(T[i])) return NULL;  /* Pesquisa sem sucesso */
@@ -74,13 +61,6 @@ void Insere(TipoItem x, TipoPesos p, TipoDicionario T){
   Ins(x, &T[h(x.Chave, p)]);
   else printf(" Registro ja  esta  presente\n");
 } 
-
-void Retira(TipoItem x, TipoPesos p, TipoDicionario T){
-  TipoApontador Ap; Ap = Pesquisa(x.Chave, p, T);
-  if (Ap == NULL)
-  printf(" Registro nao esta  presente\n");
-  else Ret(Ap, &T[h(x.Chave, p)], &x);
-}
 
 void Imp(TipoLista Lista){
   TipoApontador Aux;
@@ -107,7 +87,5 @@ void LerPalavra(char *p, int Tam){
   while (((c=getchar())!='\n') && j<Tam-1) p[j++]= c;
   p[j]='\0';
   while(c != '\n') c=getchar();
-  /* Desconsiderar espacos ao final 
-    da cadeia como ocorre em Pascal.*/
   for(i=j-1;(i>=0 && p[i]==' ');i--) p[i]='\0';
 }
