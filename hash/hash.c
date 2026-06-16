@@ -1,18 +1,24 @@
+/*
+Modificações a fazer:
+Colocar if na inserção para caso o idDoc seja igual, não inserir na celula seguinte da lista encadeada e sim qnt++
+
+*/
+
 #include "hash.h"
 
-void FLVazia(TipoLista *Lista){
-  Lista->Primeiro = (TipoCelula *)malloc(sizeof(TipoCelula));
-  Lista->Ultimo = Lista->Primeiro; Lista->Primeiro->Prox = NULL;
+void FLVazia(ListaEncadeada *Hash){
+  Hash->Primeiro = (TipoCelula *)malloc(sizeof(TipoCelula));
+  Hash->Ultimo = Hash->Primeiro; Hash->Primeiro->Prox = NULL;
 }  
 
-short Vazia(TipoLista Lista){
-    return (Lista.Primeiro == Lista.Ultimo); 
+short Vazia(ListaEncadeada Hash){
+    return (Hash.Primeiro == Hash.Ultimo); 
 }
 
-void Ins(TipoItem x, TipoLista *Lista){
-  Lista->Ultimo->Prox = (TipoCelula *)malloc(sizeof(TipoCelula));
-  Lista->Ultimo = Lista->Ultimo->Prox; Lista->Ultimo->Item = x;
-  Lista->Ultimo->Prox = NULL;
+void Ins(TipoItem x, ListaEncadeada *Hash){
+  Hash->Ultimo->Prox = (TipoCelula *)malloc(sizeof(TipoCelula));
+  Hash->Ultimo = Hash->Ultimo->Prox; Hash->Ultimo->Item = x;
+  Hash->Ultimo->Prox = NULL;
 }  
 
 void GeraPesos(TipoPesos p){
@@ -27,20 +33,20 @@ void GeraPesos(TipoPesos p){
       p[i][j] = 1 + (int)(10000.0 * rand() / (RAND_MAX + 1.0));
 }
 
-unsigned int h(TipoChave Chave, TipoPesos p){
+unsigned int h(TipoPalavra Palavra, TipoPesos p){
   int i; unsigned int Soma = 0; 
-  int comp = strlen(Chave);
-  for (i = 0; i < comp; i++) Soma += p[i][(unsigned int)Chave[i]];
+  int comp = strlen(Palavra);
+  for (i = 0; i < comp; i++) Soma += p[i][(unsigned int)Palavra[i]];
   return (Soma % M);
 }
 
-void Inicializa(TipoDicionario T){
+void Inicializa(TabelaHash T){
   int i;
   for (i = 0; i < M; i++) FLVazia(&T[i]);
 }
 
-TipoApontador Pesquisa(TipoChave Ch, TipoPesos p, TipoDicionario T){
-  /* TipoApontador de retorno aponta para o item anterior da lista */
+TipoApontador Pesquisa(TipoPalavra Ch, TipoPesos p, TabelaHash T){
+  /* TipoApontador de retorno aponta para o item anterior da Hash */
   unsigned int i;
   TipoApontador Ap;
   i = h(Ch, p);
@@ -48,30 +54,30 @@ TipoApontador Pesquisa(TipoChave Ch, TipoPesos p, TipoDicionario T){
   else 
   { Ap = T[i].Primeiro;
     while (Ap->Prox->Prox != NULL &&
-        strncmp(Ch, Ap->Prox->Item.Chave, sizeof(TipoChave))) 
+        strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra))) 
       Ap = Ap->Prox;
-    if (!strncmp(Ch, Ap->Prox->Item.Chave, sizeof(TipoChave))) 
+    if (!strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra))) 
     return Ap;
     else return NULL;  /* Pesquisa sem sucesso */
   }
 }  
 
-void Insere(TipoItem x, TipoPesos p, TipoDicionario T){
-  if (Pesquisa(x.Chave, p, T) == NULL)
-  Ins(x, &T[h(x.Chave, p)]);
+void Insere(TipoItem x, TipoPesos p, TabelaHash T){
+  if (Pesquisa(x.Palavra, p, T) == NULL)
+  Ins(x, &T[h(x.Palavra, p)]);
   else printf(" Registro ja  esta  presente\n");
 } 
 
-void Imp(TipoLista Lista){
+void Imp(ListaEncadeada Hash){
   TipoApontador Aux;
-  Aux = Lista.Primeiro->Prox;
+  Aux = Hash.Primeiro->Prox;
   while (Aux != NULL) 
-    { printf("%.*s ", N, Aux->Item.Chave);
+    { printf("%.*s ", N, Aux->Item.Palavra);
       Aux = Aux->Prox;
     }
 }
 
-void Imprime(TipoDicionario Tabela){
+void Imprime(TabelaHash Tabela){
   int i;
   for (i = 0; i < M; i++) 
     { printf("%d: ", i);
