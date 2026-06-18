@@ -1,9 +1,3 @@
-/*
-Modificações a fazer:
-Colocar if na inserção para caso o idDoc seja igual, não inserir na celula seguinte da lista encadeada e sim qnt++
-
-*/
-
 #include "hash.h"
 
 void FLVazia(ListaEncadeada *Hash){
@@ -17,15 +11,14 @@ short Vazia(ListaEncadeada Hash){
 
 void Ins(TipoItem x, ListaEncadeada *Hash){
   Hash->Ultimo->Prox = (TipoCelula *)malloc(sizeof(TipoCelula));
-  Hash->Ultimo = Hash->Ultimo->Prox; Hash->Ultimo->Item = x;
+  Hash->Ultimo = Hash->Ultimo->Prox;
+  Hash->Ultimo->Item = x;
   Hash->Ultimo->Prox = NULL;
 }  
 
 void GeraPesos(TipoPesos p){
-  /* Gera valores randomicos entre 1 e 10.000 */
   int i, j;
   struct timeval semente;
-  /* Utilizar o tempo como semente para a funcao srand() */
   gettimeofday(&semente, NULL); 
   srand((int)(semente.tv_sec + 1000000 * semente.tv_usec));
   for (i = 0; i < N; i++)
@@ -51,41 +44,61 @@ TipoApontador Pesquisa(TipoPalavra Ch, TipoPesos p, TabelaHash T){
   TipoApontador Ap;
   i = h(Ch, p);
   if (Vazia(T[i])) return NULL;  /* Pesquisa sem sucesso */
-  else 
-  { Ap = T[i].Primeiro;
-    while (Ap->Prox->Prox != NULL &&
-        strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra))) 
+  else{
+    Ap = T[i].Primeiro;
+    while (Ap->Prox != NULL && strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra)))
       Ap = Ap->Prox;
-    if (!strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra))) 
-    return Ap;
+    if (Ap->Prox != NULL && !strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra)))
+      return Ap;
     else return NULL;  /* Pesquisa sem sucesso */
   }
 }  
 
-void Insere(TipoItem x, TipoPesos p, TabelaHash T){
-  if (Pesquisa(x.Palavra, p, T) == NULL)
-  Ins(x, &T[h(x.Palavra, p)]);
-  else printf(" Registro ja  esta  presente\n");
-} 
+void Insere(TipoItem x, TipoPesos p, TabelaHash T) {
+  TipoApontador Ap = PesquisaUltima(x.Palavra, p, T);
 
-void Imp(ListaEncadeada Hash){
-  TipoApontador Aux;
-  Aux = Hash.Primeiro->Prox;
-  while (Aux != NULL) 
-    { printf("%.*s ", N, Aux->Item.Palavra);
-      Aux = Aux->Prox;
+  if (Ap == NULL) {
+    /* Palavra nunca vista: insere nova célula */
+    x.qnt = 1;
+    Ins(x, &T[h(x.Palavra, p)]);
+  } 
+  else {
+    TipoApontador UltimaCelula = Ap->Prox;
+    if (UltimaCelula->Item.idDoc == x.idDoc) {
+      /* IdDoc é igual -> incrementa qnt */
+      UltimaCelula->Item.qnt++;
+    } else {
+      /* IdDoc é diferente -> nova célula */
+      x.qnt = 1;
+      Ins(x, &T[h(x.Palavra, p)]);
     }
+  }
 }
 
-void Imprime(TabelaHash Tabela){
+void Imp(ListaEncadeada Hash) {
+  TipoApontador Aux;
+  Aux = Hash.Primeiro->Prox;
+    
+  if (Aux == NULL) return;
+    
+  printf("%-20.*s", N, Aux->Item.Palavra);
+    
+  while (Aux != NULL) {
+    printf(" <%-2d, %-2d>", Aux->Item.qnt, Aux->Item.idDoc);
+    Aux = Aux->Prox;
+  }
+  printf("\n");
+}
+
+void Imprime(TabelaHash Tabela) {
   int i;
-  for (i = 0; i < M; i++) 
-    { printf("%d: ", i);
-      if (!Vazia(Tabela[i]))
+  printf("%-20s %s\n", "Palavra", "<qtde, idDoc>");
+  printf("--------------------------------------\n");
+  for (i = 0; i < M; i++) {
+    if (!Vazia(Tabela[i]))
       Imp(Tabela[i]);
-      putchar('\n');
-    }
-} 
+  }
+}
  
 void LerPalavra(char *p, int Tam){
   char c; int i, j;
@@ -94,4 +107,19 @@ void LerPalavra(char *p, int Tam){
   p[j]='\0';
   while(c != '\n') c=getchar();
   for(i=j-1;(i>=0 && p[i]==' ');i--) p[i]='\0';
+}
+
+TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T) {
+  unsigned int i = h(Ch, p);
+  TipoApontador Ap, Ultimo = NULL;
+
+  if (Vazia(T[i])) return NULL;
+
+  Ap = T[i].Primeiro;
+  while (Ap->Prox != NULL) {
+    if (!strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra)))
+      Ultimo = Ap;
+    Ap = Ap->Prox;
+  }
+  return Ultimo; /* aponta para o anterior da última palavra */
 }
