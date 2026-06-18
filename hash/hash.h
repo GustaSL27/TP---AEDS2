@@ -36,3 +36,4 @@ void Insere(TipoItem x, TipoPesos p, TabelaHash T);
 void Imp(ListaEncadeada Hash);
 void Imprime(TabelaHash Tabela);
 void LerPalavra(char *p, int Tam);
+TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T);
