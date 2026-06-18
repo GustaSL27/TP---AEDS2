@@ -78,16 +78,21 @@ void Insere(TipoItem x, TipoPesos p, TabelaHash T) {
 void Imp(ListaEncadeada Hash) {
   TipoApontador Aux;
   Aux = Hash.Primeiro->Prox;
-    
-  if (Aux == NULL) return;
-    
-  printf("%-20.*s", N, Aux->Item.Palavra);
-    
+
   while (Aux != NULL) {
-    printf(" <%-2d, %-2d>", Aux->Item.qnt, Aux->Item.idDoc);
-    Aux = Aux->Prox;
+    /* Imprime a palavra desta célula */
+    printf("%-20.*s", N, Aux->Item.Palavra);
+    printf(" <%d , %d>", Aux->Item.qnt, Aux->Item.idDoc);
+        
+    /* Percorre as próximas células que são da mesma palavra */
+    TipoApontador Prox = Aux->Prox;
+    while (Prox != NULL && !strncmp(Aux->Item.Palavra, Prox->Item.Palavra, sizeof(TipoPalavra))) {
+      printf(" <%d , %d>", Prox->Item.qnt, Prox->Item.idDoc);
+      Prox = Prox->Prox;
+    }
+    printf("\n");
+    Aux = Prox; /* volta caso haja palavra diferente */
   }
-  printf("\n");
 }
 
 void Imprime(TabelaHash Tabela) {
