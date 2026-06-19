@@ -38,7 +38,7 @@ void Inicializa(TabelaHash T){
   for (i = 0; i < M; i++) FLVazia(&T[i]);
 }
 
-TipoApontador Pesquisa(TipoPalavra Ch, TipoPesos p, TabelaHash T){
+TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T){
   /* TipoApontador de retorno aponta para o item anterior da Hash */
   unsigned int i;
   TipoApontador Ap;
@@ -54,7 +54,7 @@ TipoApontador Pesquisa(TipoPalavra Ch, TipoPesos p, TabelaHash T){
   }
 }  
 
-void Insere(TipoItem x, TipoPesos p, TabelaHash T) {
+void InsereHash(TipoItem x, TipoPesos p, TabelaHash T) {
   TipoApontador Ap = PesquisaUltima(x.Palavra, p, T);
 
   if (Ap == NULL) {
@@ -95,7 +95,7 @@ void Imp(ListaEncadeada Hash) {
   }
 }
 
-void Imprime(TabelaHash Tabela) {
+void ImprimeHash(TabelaHash Tabela) {
   int i;
   printf("%-20s %s\n", "Palavra", "<qtde, idDoc>");
   printf("--------------------------------------\n");
