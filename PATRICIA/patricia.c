@@ -51,7 +51,7 @@ TipoArvore CriaNoExterno(TipoChave k, int idDoc) {
 }
 
 // pesquisa uma palavra na arvore
-void Pesquisa(TipoChave k, TipoArvore t) {
+void PesquisaPatricia(TipoChave k, TipoArvore t) {
     if (t == NULL) return;
 
     // chegou em folha
@@ -63,9 +63,9 @@ void Pesquisa(TipoChave k, TipoArvore t) {
 
     // decide qual lado seguir pelo bit
     if (TipoBit(t->NO.NInterno.Index, k) == 0)
-        Pesquisa(k, t->NO.NInterno.Esq);
+        PesquisaPatricia(k, t->NO.NInterno.Esq);
     else
-        Pesquisa(k, t->NO.NInterno.Dir);
+        PesquisaPatricia(k, t->NO.NInterno.Dir);
 }
 
 // insere uma palavra em um ponto de divergencia
@@ -80,7 +80,7 @@ TipoArvore InsereEmDivergencia(TipoChave k, TipoArvore *t, int i, int idDoc) {
 }
 
 // insere palavra na arvore
-TipoArvore Insere(TipoChave k, TipoArvore *t, int idDoc) {
+TipoArvore InserePatricia(TipoChave k, TipoArvore *t, int idDoc) {
     int i;
 
     // arvore vazia -> cria folha
@@ -109,16 +109,16 @@ TipoArvore Insere(TipoChave k, TipoArvore *t, int idDoc) {
     // se for no interno, continua descendo pela arvore
     if (TipoBit((*t)->NO.NInterno.Index, k) == 0)
         (*t)->NO.NInterno.Esq =
-            Insere(k, &(*t)->NO.NInterno.Esq, idDoc);
+            InserePatricia(k, &(*t)->NO.NInterno.Esq, idDoc);
     else
         (*t)->NO.NInterno.Dir =
-            Insere(k, &(*t)->NO.NInterno.Dir, idDoc);
+            InserePatricia(k, &(*t)->NO.NInterno.Dir, idDoc);
 
     return *t;
 }
 
 // percorre e imprime a arvore
-void Imprime(TipoArvore t) {
+void ImprimePatricia(TipoArvore t) {
     if (t == NULL) return;
 
     // folha -> imprime palavra e ocorrencias
