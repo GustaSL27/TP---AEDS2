@@ -10,7 +10,7 @@ int main() {
 
     TipoArvore arvore = NULL;
 
-    FILE *entrada = fopen("entrada.txt", "r");
+    FILE *entrada = fopen("../entrada.txt", "r");
     if (!entrada) {
         fprintf(stderr, "Erro ao abrir entrada.txt\n");
         return 1;
