@@ -136,6 +136,6 @@ void ImprimePatricia(TipoArvore t) {
     }
 
     // percurso em ordem
-    Imprime(t->NO.NInterno.Esq);
-    Imprime(t->NO.NInterno.Dir);
+    ImprimePatricia(t->NO.NInterno.Esq);
+    ImprimePatricia(t->NO.NInterno.Dir);
 }
