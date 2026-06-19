@@ -1,6 +1,7 @@
 #include <ctype.h>
-#include "patricia.h"
-#include "patricia.c"
+#include <string.h>
+#include "PATRICIA/patricia.h"
+#include "hash/hash.h"
 
 int main() {
     TipoArvore arvore = NULL;
@@ -9,6 +10,11 @@ int main() {
     TipoChave palavra;
     int idDoc, i, j;
     char c;
+
+    TabelaHash Tabela;
+    TipoPesos pesos;
+    Inicializa(Tabela);
+    GeraPesos(pesos);
 
     // le cada fabula automaticamente
     for (idDoc = 0; idDoc < MAXDOCS; idDoc++) {
@@ -22,6 +28,7 @@ int main() {
             continue;
         }
 
+        TipoItem x;
         // le cada palavra do arquivo
         while (fscanf(arquivo, "%99s", palavra) == 1) {
 
@@ -37,7 +44,10 @@ int main() {
             // ignora palavras vazias
             if (j == 0) continue;
 
+            strcpy(x.Palavra, (char *)palavra);
+            x.idDoc = idDoc + 1;
             arvore = InserePatricia(palavra, &arvore, idDoc);
+            InsereHash(x, pesos, Tabela);
         }
 
         fclose(arquivo);
@@ -46,6 +56,10 @@ int main() {
     // imprime a tabela
     // percorre a arvore e imprime cada palavra com suas contagens
 
+    printf("Hash apos entrada:\n\n");
+    ImprimeHash(Tabela);
+
+    printf("PATRICIA apos entrada:\n\n");
     ImprimePatricia(arvore);
 
     return 0;
