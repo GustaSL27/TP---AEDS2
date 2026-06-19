@@ -43,9 +43,9 @@ int TipoBit(TipoIndex i, TipoChave k);
 short VerificaExterno(TipoArvore p);
 TipoArvore CriaNoInterno(int i, TipoArvore *esq, TipoArvore *dir);
 TipoArvore CriaNoExterno(TipoChave k, int idDoc);
-void Pesquisa(TipoChave k, TipoArvore t);
+void PesquisaPatricia(TipoChave k, TipoArvore t);
 TipoArvore InsereEmDivergencia(TipoChave k, TipoArvore *t, int i, int idDoc);
-TipoArvore Insere(TipoChave k, TipoArvore *t, int idDoc);
-void Imprime(TipoArvore t);
+TipoArvore InserePatricia(TipoChave k, TipoArvore *t, int idDoc);
+void ImprimePatricia(TipoArvore t);
 
 #endif
