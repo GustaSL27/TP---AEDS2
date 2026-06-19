@@ -37,7 +37,7 @@ int main() {
             // ignora palavras vazias
             if (j == 0) continue;
 
-            arvore = Insere(palavra, &arvore, idDoc);
+            arvore = InserePatricia(palavra, &arvore, idDoc);
         }
 
         fclose(arquivo);
@@ -46,7 +46,7 @@ int main() {
     // imprime a tabela
     // percorre a arvore e imprime cada palavra com suas contagens
 
-    Imprime(arvore);
+    ImprimePatricia(arvore);
 
     return 0;
 }
