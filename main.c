@@ -8,7 +8,9 @@ int main() {
     Inicializa(Tabela);
     GeraPesos(pesos);
 
-    FILE *entrada = fopen("../entrada.txt", "r");
+    TipoArvore arvore = NULL;
+
+    FILE *entrada = fopen("entrada.txt", "r");
     if (!entrada) {
         fprintf(stderr, "Erro ao abrir entrada.txt\n");
         return 1;
@@ -27,10 +29,12 @@ int main() {
             continue;
         }
 
+        TipoChave palavra;
         TipoItem x;
         x.idDoc=i+1;
         while (fscanf(fabula, "%s", x.Palavra) == 1) {
             InsereHash(x, pesos, Tabela);
+            arvore = InserePatricia(palavra, &arvore, i);
         }
 
         fclose(fabula);
@@ -38,8 +42,11 @@ int main() {
 
     fclose(entrada);
 
-    printf("Hash Após entrada:\n\n");
+    printf("Hash apos entrada:\n\n");
     ImprimeHash(Tabela);
+
+    printf("PATRICIA apos entrada:\n\n");
+    ImprimePatricia(arvore);
 
     return 0;
 }
