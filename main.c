@@ -30,7 +30,7 @@ int main() {
         TipoItem x;
         x.idDoc=i+1;
         while (fscanf(fabula, "%s", x.Palavra) == 1) {
-            Insere(x, pesos, Tabela);
+            InsereHash(x, pesos, Tabela);
         }
 
         fclose(fabula);
@@ -39,7 +39,7 @@ int main() {
     fclose(entrada);
 
     printf("Hash Após entrada:\n\n");
-    Imprime(Tabela);
+    ImprimeHash(Tabela);
 
     return 0;
 }
