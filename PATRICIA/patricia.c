@@ -128,7 +128,7 @@ void Imprime(TipoArvore t) {
         // imprime apenas os documentos onde apareceu
         for (int i = 0; i < MAXDOCS; i++) {
             if (t->NO.NExterno.qtde[i] > 0)
-                printf("<%d, %d> ", i + 1, t->NO.NExterno.qtde[i]);
+                printf("<%d, %d> ", t->NO.NExterno.qtde[i], i + 1);
         }
 
         printf("\n");
