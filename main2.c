@@ -1,52 +1,50 @@
-#include "hash/hash.c"
-#include "PATRICIA/PATRICIA.c"
+#include <ctype.h>
+#include "patricia.h"
+#include "patricia.c"
 
 int main() {
-
-    TabelaHash Tabela;
-    TipoPesos pesos;
-    Inicializa(Tabela);
-    GeraPesos(pesos);
-
     TipoArvore arvore = NULL;
+    FILE *arquivo;
+    char nomeArquivo[30];
+    TipoChave palavra;
+    int idDoc, i, j;
+    char c;
 
-    FILE *entrada = fopen("../entrada.txt", "r");
-    if (!entrada) {
-        fprintf(stderr, "Erro ao abrir entrada.txt\n");
-        return 1;
-    }
+    // le cada fabula automaticamente
+    for (idDoc = 0; idDoc < MAXDOCS; idDoc++) {
 
-    int qtd;
-    fscanf(entrada, "%d\n", &qtd);
+        // monta o nome do arquivo ex: fabula01.txt
+        sprintf(nomeArquivo, "../fabulas/fabula%02d.txt", idDoc + 1);
 
-    for (int i = 0; i < qtd; i++) {
-        char nomeFabula[64];
-        fscanf(entrada, "%s", nomeFabula);
-
-        FILE *fabula = fopen(nomeFabula, "r");
-        if (!fabula) {
-            fprintf(stderr, "Erro ao abrir %s\n", nomeFabula);
-            continue;
+        arquivo = fopen(nomeArquivo, "r");
+        if (arquivo == NULL) {
+            break;  // para de procurar quando nao encontrar mais arquivos
         }
 
-        TipoChave palavra;
-        TipoItem x;
-        x.idDoc=i+1;
-        while (fscanf(fabula, "%s", x.Palavra) == 1) {
-            InsereHash(x, pesos, Tabela);
-            arvore = InserePatricia(palavra, &arvore, i);
+        // le cada palavra do arquivo
+        while (fscanf(arquivo, "%99s", palavra) == 1) {
+
+            // converte para minusculo e remove sinais
+            j = 0;
+            for (i = 0; palavra[i] != '\0'; i++) {
+                c = tolower(palavra[i]);
+                if (c >= 'a' && c <= 'z')  // aceita apenas letras
+                    palavra[j++] = c;
+            }
+            palavra[j] = '\0';  // finaliza a palavra
+
+            // ignora palavras vazias
+            if (j == 0) continue;
+
+            arvore = Insere(palavra, &arvore, idDoc);
         }
 
-        fclose(fabula);
+        fclose(arquivo);
     }
 
-    fclose(entrada);
-
-    printf("Hash apos entrada:\n\n");
-    ImprimeHash(Tabela);
-
-    printf("PATRICIA apos entrada:\n\n");
-    ImprimePatricia(arvore);
+    // imprime a tabela
+    // percorre a arvore e imprime cada palavra com suas contagens
+    Imprime(arvore);
 
     return 0;
 }
