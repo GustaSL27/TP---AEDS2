@@ -51,7 +51,7 @@ TipoArvore CriaNoExterno(TipoChave k, int idDoc) {
 }
 
 // pesquisa uma palavra na arvore
-void PesquisaPatricia(TipoChave k, TipoArvore t) {
+void Pesquisa(TipoChave k, TipoArvore t) {
     if (t == NULL) return;
 
     // chegou em folha
@@ -63,62 +63,70 @@ void PesquisaPatricia(TipoChave k, TipoArvore t) {
 
     // decide qual lado seguir pelo bit
     if (TipoBit(t->NO.NInterno.Index, k) == 0)
-        PesquisaPatricia(k, t->NO.NInterno.Esq);
+        Pesquisa(k, t->NO.NInterno.Esq);
     else
-        PesquisaPatricia(k, t->NO.NInterno.Dir);
+        Pesquisa(k, t->NO.NInterno.Dir);
 }
 
 // insere uma palavra em um ponto de divergencia
+// mantem o Index sempre crescente ao descer na arvore,
+// para que o percurso esquerda-direita preserve a ordem dos bits (alfabetica)
 TipoArvore InsereEmDivergencia(TipoChave k, TipoArvore *t, int i, int idDoc) {
-    TipoArvore novo = CriaNoExterno(k, idDoc);
-
-    // se o bit da nova chave for 0, vai para esquerda
-    if (TipoBit(i, k) == 0)
-        return CriaNoInterno(i, &novo, t);
-    else
-        return CriaNoInterno(i, t, &novo);
+    TipoArvore p;
+    if (VerificaExterno(*t) || i < (*t)->NO.NInterno.Index) {
+        // insere o novo no interno aqui mesmo
+        p = CriaNoExterno(k, idDoc);
+        if (TipoBit(i, k) == 1)
+            return (CriaNoInterno(i, t, &p));
+        else
+            return (CriaNoInterno(i, &p, t));
+    }
+    else {
+        // ainda nao chegou no ponto certo, desce mais na arvore
+        if (TipoBit((*t)->NO.NInterno.Index, k) == 1)
+            (*t)->NO.NInterno.Dir = InsereEmDivergencia(k, &((*t)->NO.NInterno.Dir), i, idDoc);
+        else
+            (*t)->NO.NInterno.Esq = InsereEmDivergencia(k, &((*t)->NO.NInterno.Esq), i, idDoc);
+        return (*t);
+    }
 }
 
 // insere palavra na arvore
-TipoArvore InserePatricia(TipoChave k, TipoArvore *t, int idDoc) {
+TipoArvore Insere(TipoChave k, TipoArvore *t, int idDoc) {
+    TipoArvore p;
     int i;
 
     // arvore vazia -> cria folha
     if (*t == NULL)
         return CriaNoExterno(k, idDoc);
 
-    // se chegou em folha
-    if (VerificaExterno(*t)) {
-
-        // se a palavra ja existe, incrementa quantidade nesse documento
-        if (strcmp((char*)(*t)->NO.NExterno.Chave, (char*)k) == 0) {
-            (*t)->NO.NExterno.qtde[idDoc]++;
-            return *t;
-        }
-
-        // encontra o primeiro bit diferente entre as duas palavras
-        for (i = 1; i <= D; i++) {
-            if (TipoBit(i, k) != TipoBit(i, (*t)->NO.NExterno.Chave))
-                break;
-        }
-
-        // cria no interno no ponto da divergencia
-        return InsereEmDivergencia(k, t, i, idDoc);
+    // desce ate uma folha usando os bits da chave nova
+    p = *t;
+    while (!VerificaExterno(p)) {
+        if (TipoBit(p->NO.NInterno.Index, k) == 1)
+            p = p->NO.NInterno.Dir;
+        else
+            p = p->NO.NInterno.Esq;
     }
 
-    // se for no interno, continua descendo pela arvore
-    if (TipoBit((*t)->NO.NInterno.Index, k) == 0)
-        (*t)->NO.NInterno.Esq =
-            InserePatricia(k, &(*t)->NO.NInterno.Esq, idDoc);
-    else
-        (*t)->NO.NInterno.Dir =
-            InserePatricia(k, &(*t)->NO.NInterno.Dir, idDoc);
+    // se a palavra ja existe, incrementa quantidade nesse documento
+    if (strcmp((char*)p->NO.NExterno.Chave, (char*)k) == 0) {
+        p->NO.NExterno.qtde[idDoc]++;
+        return *t;
+    }
 
-    return *t;
+    // encontra o primeiro bit diferente entre as duas palavras
+    for (i = 1; i <= D; i++) {
+        if (TipoBit(i, k) != TipoBit(i, p->NO.NExterno.Chave))
+            break;
+    }
+
+    // cria no interno no ponto da divergencia
+    return InsereEmDivergencia(k, t, i, idDoc);
 }
 
 // percorre e imprime a arvore
-void ImprimePatricia(TipoArvore t) {
+void Imprime(TipoArvore t) {
     if (t == NULL) return;
 
     // folha -> imprime palavra e ocorrencias
@@ -136,6 +144,6 @@ void ImprimePatricia(TipoArvore t) {
     }
 
     // percurso em ordem
-    ImprimePatricia(t->NO.NInterno.Esq);
-    ImprimePatricia(t->NO.NInterno.Dir);
+    Imprime(t->NO.NInterno.Esq);
+    Imprime(t->NO.NInterno.Dir);
 }
