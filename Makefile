@@ -3,4 +3,4 @@ run:
 	./tp_aeds2.exe
 
 clean:
-	del /f /q tp_aeds2.exe
+	rm -f tp_aeds2.exe tp_aeds2 *.o
