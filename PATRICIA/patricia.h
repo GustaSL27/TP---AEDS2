@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define MAXPALAVRA 100
-#define MAXDOCS 15
+#define MAXDOCS 21
 #define D (MAXPALAVRA * 8)
 
 typedef unsigned char TipoChave[MAXPALAVRA];  // char para bits
