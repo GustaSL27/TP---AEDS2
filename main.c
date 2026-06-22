@@ -1,16 +1,16 @@
 #include <ctype.h>
 #include <string.h>
 #include "PATRICIA/patricia.h"
+#include "stopwords/stopword.h"
 #include "hash/hash.h"
+#include "leitura/leitura.h"
 
 int main() {
     TipoArvore arvore = NULL;
-    FILE *arquivo;
-    char nomeArquivo[30];
-    TipoChave palavra;
-    int idDoc, i, j;
-    char c;
+    TipoArvore arvorestop = NULL;
+    char nomeArquivoStop[30] = "stopwords/stopwords.txt";
     char decisao;
+    int opcao;
 
     TabelaHash Tabela;
     TipoPesos pesos;
@@ -18,83 +18,66 @@ int main() {
     GeraPesos(pesos);
 
     printf("Bem vindo ao sistema de indexacao de fabulas\n\n");
-    printf("Qual funcao voce gostaria de usar:\n\n");
-    printf("a - Receber e inserir as fabulas\n");
-    printf("b - Imprimir a tabela hash e a arvore PATRICIA\n");
-    printf("c - Buscar palavra\n");
-    printf("d - Sair\n\n");
-    while(1) {
+
+    do {
+        printf("Qual funcao voce gostaria de usar:\n\n");
+        printf("a - Receber e inserir as fabulas\n");
+        printf("b - Imprimir a tabela hash e a arvore PATRICIA\n");
+        printf("c - Buscar palavra\n");
+        printf("d - Sair\n\n");
         printf("Digite a letra da funcao desejada: ");
         scanf(" %c", &decisao);
+
         if(decisao == 'a'){
             printf("Recebendo e inserindo as fabulas\n\n");
-            FILE *entrada = fopen("entrada.txt", "r");
-            if (!entrada){
-                fprintf(stderr, "Erro ao abrir entrada.txt\n");
-                return 1;
+
+            LerStopWord(nomeArquivoStop, &arvorestop);
+
+            int qtd = LerEntrada("fabulas/entrada.txt");
+            if (qtd == -1) {
+                printf("Erro ao ler entrada.txt\n");
+            } else {
+                LerFabulas("fabulas/fabula", qtd, &arvore, arvorestop, Tabela, pesos);
+                printf("Fabulas recebidas e inseridas com sucesso\n\n");
+            }
+        }
+        else if (decisao == 'b') {
+            do
+            {
+                printf("\n1- Hash\n");
+                printf("2- Patricia\n");
+                printf("Digite a opcao desejada: ");
+                scanf("%d",&opcao);
+
+                if(opcao != 1 && opcao !=2){
+                    printf("Opcao invalida!!!!\n\n");
+                }
+            } while (opcao !=1 && opcao != 2);
+
+            if(opcao == 1){
+                 printf("Imprimindo tabela hash...\n\n");
+                 printf("Hash apos entrada:\n\n");
+                 ImprimeHash(Tabela);
+            }else if(opcao == 2){
+                printf("Imprimindo arvore PATRICIA\n\n");
+                printf("PATRICIA apos entrada:\n\n");
+                ImprimePatricia(arvore);
             }
 
-            int qtd;
-            fscanf(entrada, "%d\n", &qtd);
-
-            // le cada fabula automaticamente
-            for (idDoc = 0; idDoc < qtd; idDoc++) {
-
-                // monta o nome do arquivo ex: fabula01.txt
-                sprintf(nomeArquivo, "../fabulas/fabula%02d.txt", idDoc + 1);
-
-                arquivo = fopen(nomeArquivo, "r");
-                if (arquivo == NULL) {
-                    printf("Arquivo %s nao encontrado\n", nomeArquivo);
-                    continue;
-                }
-
-                TipoItem x;
-                // le cada palavra do arquivo
-                while (fscanf(arquivo, "%99s", palavra) == 1) {
-
-                    // converte para minusculo e remove sinais
-                    j = 0;
-                    for (i = 0; palavra[i] != '\0'; i++) {
-                        c = tolower(palavra[i]);
-                        if (c >= 'a' && c <= 'z')  // aceita apenas letras
-                            palavra[j++] = c;
-                    }
-                    palavra[j] = '\0';  // finaliza a palavra
-
-                    // ignora palavras vazias
-                    if (j == 0) continue;
-
-                    strcpy(x.Palavra, (char *)palavra);
-                    x.idDoc = idDoc + 1;
-                    arvore = InserePatricia(palavra, &arvore, idDoc);
-                    InsereHash(x, pesos, Tabela);
-                }
-
-                fclose(arquivo);
-            }
-            printf("Fabulas recebidas e inseridas com sucesso\n\n");
         }
-        if (decisao == 'b') {
-            // imprime a tabela
-            // percorre a arvore e imprime cada palavra com suas contagens
-            printf("Imprimindo tabela hash e arvore PATRICIA\n\n");
-            printf("Hash apos entrada:\n\n");
-            ImprimeHash(Tabela);
 
-            printf("PATRICIA apos entrada:\n\n");
-            ImprimePatricia(arvore);
-        }
-        
-        if(decisao == 'c') {
+        else if(decisao == 'c') {
             // busca por ordem de relevancia a ser implementada
         }
 
-        if(decisao == 'd') {
+        else if(decisao == 'd') {
             printf("Finalizando o programa.\n");
-            break;
         }
-    }
+        else {
+            printf("Opcao invalida! Tente novamente.\n\n");
+        }
+
+    } while (decisao != 'd');
 
     return 0;
 }

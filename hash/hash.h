@@ -1,3 +1,5 @@
+#ifndef HASH_H
+#define HASH_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -37,3 +39,4 @@ void Imp(ListaEncadeada Hash);
 void ImprimeHash(TabelaHash Tabela);
 void LerPalavra(char *p, int Tam);
 TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T);
+#endif
