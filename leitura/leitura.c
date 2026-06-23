@@ -17,7 +17,7 @@ int LerEntrada(char *nomeArquivo) {
 }
 
 
-void LerFabulas(char *nomeArquivoBase, int qtd, TipoArvore *arvore, TipoArvore arvorestop, TabelaHash Tabela, TipoPesos pesos) {
+void LerFabulasPATRICIA(char *nomeArquivoBase, int qtd, TipoArvore *arvore, TipoArvore arvorestop) {
     FILE *arquivo;
     char nomeArquivo[30];
     TipoChave palavra;
@@ -52,6 +52,46 @@ void LerFabulas(char *nomeArquivoBase, int qtd, TipoArvore *arvore, TipoArvore a
             strcpy(x.Palavra, palavra.chave);
             x.idDoc = idDoc + 1;
             InserePatricia(palavra, arvore, idDoc + 1);
+        }
+
+        fclose(arquivo);
+    }
+}
+
+void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, TabelaHash Tabela, TipoPesos pesos) {
+    FILE *arquivo;
+    char nomeArquivo[30];
+    TipoChave palavra;
+    int idDoc, i, j;
+    char c;
+
+    for (idDoc = 0; idDoc < qtd; idDoc++) {
+        sprintf(nomeArquivo, "fabulas/fabula%02d.txt", idDoc + 1);
+
+        arquivo = fopen(nomeArquivo, "r");
+        if (arquivo == NULL) {
+            printf("Arquivo %s nao encontrado\n", nomeArquivo);
+            continue;
+        }
+
+        TipoItem x;
+        while (fscanf(arquivo, "%19s", palavra.chave) == 1) {
+            j = 0;
+            for (i = 0; palavra.chave[i] != '\0'; i++) {
+                c = tolower(palavra.chave[i]);
+                if (c >= 'a' && c <= 'z')
+                    palavra.chave[j++] = c;
+            }
+            palavra.chave[j] = '\0';
+
+            if (j == 0) continue;
+
+            if (EhStopWord(palavra, arvorestop)) {
+                continue;
+            }
+
+            strcpy(x.Palavra, palavra.chave);
+            x.idDoc = idDoc + 1;
             InsereHash(x, pesos, Tabela);
         }
 
