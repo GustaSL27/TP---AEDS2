@@ -54,27 +54,45 @@ TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T){
   }
 }  
 
-void InsereHash(TipoItem x, TipoPesos p, TabelaHash T) {
+void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total) {
   TipoApontador Ap = PesquisaUltima(x.Palavra, p, T);
 
   if (Ap == NULL) {
     /* Palavra nunca vista: insere nova célula */
     x.qnt = 1;
     Ins(x, &T[h(x.Palavra, p)]);
+
+    if (*total < MAX_ARRAY) {
+        Palavras_ordenadas[*total] = x;
+        (*total)++; 
+    }
   } 
   else {
     TipoApontador UltimaCelula = Ap->Prox;
     if (UltimaCelula->Item.idDoc == x.idDoc) {
       /* IdDoc é igual -> incrementa qnt */
       UltimaCelula->Item.qnt++;
-    } else {
+      
+      // atualiza qnt no vetor também
+      for(int i = 0; i < *total; i++) {
+        if (Palavras_ordenadas[i].idDoc == x.idDoc && !strncmp(Palavras_ordenadas[i].Palavra, x.Palavra, sizeof(TipoPalavra))) {
+          Palavras_ordenadas[i].qnt++;
+          break;
+        }
+      }
+    }
+    else{
       /* IdDoc é diferente -> nova célula */
       x.qnt = 1;
       Ins(x, &T[h(x.Palavra, p)]);
+
+      if (*total < MAX_ARRAY) {
+          Palavras_ordenadas[*total] = x;
+          (*total)++;
+      }
     }
   }
 }
-
 void Imp(ListaEncadeada Hash) {
   TipoApontador Aux;
   Aux = Hash.Primeiro->Prox;
@@ -127,4 +145,46 @@ TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T) {
     Ap = Ap->Prox;
   }
   return Ultimo; /* aponta para o anterior da última palavra */
+}
+
+void InsereArray(TipoItem item, int *total) {
+  if (*total < M) {
+    Palavras_ordenadas[*total] = item;
+    (*total)++;
+  }
+}
+
+int comparar_elementos_vetor(const void *a, const void *b) {
+    TipoItem *itemA = (TipoItem *)a;
+    TipoItem *itemB = (TipoItem *)b;
+    return strncmp(itemA->Palavra, itemB->Palavra, sizeof(TipoPalavra));
+}
+
+void ImprimeArrayOrdenado(int total) {
+    if (total == 0) {
+        printf("Nenhum elemento inserido no vetor ainda.\n");
+        return;
+    }
+
+    // ordena o vetor global usando o total recebido da main
+    qsort(Palavras_ordenadas, total, sizeof(TipoItem), comparar_elementos_vetor);
+
+    printf("\n%-20s %s\n", "Palavra", "<qtde, idDoc>");
+    printf("--------------------------------------\n");
+
+    int i = 0;
+    while (i < total) {
+        printf("%-20.*s", N, Palavras_ordenadas[i].Palavra);
+        printf(" <%d , %d>", Palavras_ordenadas[i].qnt, Palavras_ordenadas[i].idDoc);
+        
+        int j = i + 1;
+        // bota as palavras iguais de documentos diferentes na mesma linha
+        while (j < total && !strncmp(Palavras_ordenadas[i].Palavra, Palavras_ordenadas[j].Palavra, sizeof(TipoPalavra))) {
+            printf(" <%d , %d>", Palavras_ordenadas[j].qnt, Palavras_ordenadas[j].idDoc);
+            j++;
+        }
+        printf("\n");
+        i = j; // vai pra próxima palavra diferente
+    }
+    printf("--------------------------------------\n");
 }
