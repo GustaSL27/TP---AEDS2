@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <string.h>
-#define M 509
+#define M 251
 #define N 20
 #define TAMALFABETO 256
 #define MAX_ARRAY 5000
