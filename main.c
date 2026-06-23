@@ -29,8 +29,7 @@ int main() {
         printf("a - Receber e inserir as fabulas\n");
         printf("b - Imprimir a tabela hash e a arvore PATRICIA\n");
         printf("c - Buscar palavra\n");
-        printf("d - Estatisticas de tempo\n");
-        printf("e - Sair\n\n");
+        printf("d - Sair\n\n");
         printf("Digite a letra da funcao desejada: ");
         scanf(" %c", &decisao);
 
@@ -43,6 +42,7 @@ int main() {
             }
 
             do{
+                printf("\nOnde você gostaria de inserir as fábulas:\n");
                 printf("\n1- Hash\n");
                 printf("2- Patricia\n");
                 printf("Digite a opcao desejada: ");
@@ -77,6 +77,7 @@ int main() {
         else if (decisao == 'b') {
             do
             {
+                printf("Qual estrutura voce gostaria de imprimir\n");
                 printf("\n1- Hash\n");
                 printf("2- Patricia\n");
                 printf("Digite a opcao desejada: ");
@@ -88,14 +89,18 @@ int main() {
             } while (opcao !=1 && opcao != 2);
 
             if(opcao == 1){
-                 printf("Imprimindo tabela hash...\n\n");
-                 printf("Hash apos entrada:\n\n");
-                 ImprimeHash(Tabela);
+                printf("Imprimindo tabela hash...\n\n");
+                printf("Hash apos entrada:\n\n");
+                ImprimeHash(Tabela);
+                printf("Imprimindo tempo da tabela hash...\n\n");
+                printf("%.5f segundos", tempo_total_Hash);
             }
             else if(opcao == 2){
                 printf("Imprimindo arvore PATRICIA\n\n");
                 printf("PATRICIA apos entrada:\n\n");
                 ImprimePatricia(arvore);
+                printf("Imprimindo tempo da arvore PATRICIA\n\n");
+                printf("%.5f segundos", tempo_total_PATRICIA);
             }
 
         }
@@ -105,31 +110,9 @@ int main() {
         }
 
         else if(decisao == 'd'){
-            do
-            {
-                printf("\n1- Hash\n");
-                printf("2- Patricia\n");
-                printf("Digite a opcao desejada: ");
-                scanf("%d",&opcao);
-
-                if(opcao != 1 && opcao !=2){
-                    printf("Opcao invalida!!!!\n\n");
-                }
-            } while (opcao !=1 && opcao != 2);
-
-            if(opcao == 1){
-                printf("Imprimindo tempo da tabela hash...\n\n");
-                printf("%.5f segundos", tempo_total_Hash);
-            }else if(opcao == 2){
-                printf("Imprimindo tempo da arvore PATRICIA\n\n");
-                printf("%.5f segundos", tempo_total_PATRICIA);
-            }
-
-        }
-
-        else if(decisao == 'e') {
             printf("Finalizando o programa.\n");
         }
+
         else{
             printf("Opcao invalida! Tente novamente.\n\n");
         }
