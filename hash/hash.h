@@ -31,7 +31,7 @@ typedef struct ListaEncadeada {
 typedef ListaEncadeada TabelaHash[M];
 
 // Vetor contendo as palavras para ordenar
-TipoItem Palavras_ordenadas[MAX_ARRAY];
+extern TipoItem Palavras_ordenadas[MAX_ARRAY];
 
 void InsereArray(TipoItem item, int *total);
 void ImprimeArrayOrdenado();
