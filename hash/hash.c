@@ -1,5 +1,7 @@
 #include "hash.h"
 
+TipoItem Palavras_ordenadas[MAX_ARRAY];
+
 void FLVazia(ListaEncadeada *Hash){
   Hash->Primeiro = (TipoCelula *)malloc(sizeof(TipoCelula));
   Hash->Ultimo = Hash->Primeiro; Hash->Primeiro->Prox = NULL;
