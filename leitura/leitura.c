@@ -53,7 +53,6 @@ void LerFabulasPATRICIA(char *nomeArquivoBase, int qtd, TipoArvore *arvore, Tipo
             x.idDoc = idDoc + 1;
             InserePatricia(palavra, arvore, idDoc + 1);
         }
-
         fclose(arquivo);
     }
 }
