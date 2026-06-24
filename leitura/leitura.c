@@ -58,7 +58,7 @@ void LerFabulasPATRICIA(char *nomeArquivoBase, int qtd, TipoArvore *arvore, Tipo
     }
 }
 
-void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, TabelaHash Tabela, TipoPesos pesos) {
+void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, TabelaHash Tabela, TipoPesos pesos, int *total) {
     FILE *arquivo;
     char nomeArquivo[30];
     TipoChave palavra;
@@ -92,7 +92,7 @@ void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, Tabel
 
             strcpy(x.Palavra, palavra.chave);
             x.idDoc = idDoc + 1;
-            InsereHash(x, pesos, Tabela);
+            InsereHash(x, pesos, Tabela, total);
         }
 
         fclose(arquivo);
