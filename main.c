@@ -65,7 +65,7 @@ int main() {
                 LerFabulasHash("fabulas/fabula", qtd, arvorestop, Tabela, pesos, &total_elementos_array);
                 tempo_final_Hash = clock();
 
-                double tempo_total_Hash = (double)(tempo_final_Hash - tempo_inicio_Hash) / CLOCKS_PER_SEC;
+                tempo_total_Hash = (double)(tempo_final_Hash - tempo_inicio_Hash) / CLOCKS_PER_SEC;
                 printf("Insercao hash concluida\n\n");
             }
             else if(opcao == 2){
@@ -75,7 +75,7 @@ int main() {
                 LerFabulasPATRICIA("fabulas/fabula", qtd, &arvore, arvorestop);
                 tempo_final_PATRICIA = clock();
 
-                double tempo_total_PATRICIA = (double)(tempo_final_PATRICIA - tempo_inicio_PATRICIA) / CLOCKS_PER_SEC;
+                tempo_total_PATRICIA = (double)(tempo_final_PATRICIA - tempo_inicio_PATRICIA) / CLOCKS_PER_SEC;
                 printf("Insercao PATRICIA concluida\n\n");
             }
         }
