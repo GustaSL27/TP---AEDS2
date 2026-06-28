@@ -4,6 +4,7 @@
 #include "stopwords/stopword.h"
 #include "hash/hash.h"
 #include "leitura/leitura.h"
+#include "relevancia/relevancia.h"
 #include "time.h"
 
 int main() {
@@ -17,6 +18,7 @@ int main() {
     double tempo_total_Hash = 0;
     double tempo_total_PATRICIA = 0;
     int total_elementos_array = 0;
+    int qtd = 0;
 
     TabelaHash Tabela;
     TipoPesos pesos;
@@ -35,13 +37,12 @@ int main() {
         printf("Digite a letra da funcao desejada: ");
         scanf(" %c", &decisao);
 
-
         // Escolhe inserir
         if(decisao == 'a'){
             LerStopWord(nomeArquivoStop, &arvorestop);
 
             // Salva a quantidade de fábulas na variável qtd
-            int qtd = LerEntrada("fabulas/entrada.txt");
+            qtd = LerEntrada("fabulas/entrada.txt");
             if (qtd == -1) {
                 printf("Erro ao ler entrada.txt\n");
             }
@@ -65,7 +66,7 @@ int main() {
                 LerFabulasHash("fabulas/fabula", qtd, arvorestop, Tabela, pesos, &total_elementos_array);
                 tempo_final_Hash = clock();
 
-                double tempo_total_Hash = (double)(tempo_final_Hash - tempo_inicio_Hash) / CLOCKS_PER_SEC;
+                tempo_total_Hash = (double)(tempo_final_Hash - tempo_inicio_Hash) / CLOCKS_PER_SEC;
                 printf("Insercao hash concluida\n\n");
             }
             else if(opcao == 2){
@@ -75,15 +76,14 @@ int main() {
                 LerFabulasPATRICIA("fabulas/fabula", qtd, &arvore, arvorestop);
                 tempo_final_PATRICIA = clock();
 
-                double tempo_total_PATRICIA = (double)(tempo_final_PATRICIA - tempo_inicio_PATRICIA) / CLOCKS_PER_SEC;
+                tempo_total_PATRICIA = (double)(tempo_final_PATRICIA - tempo_inicio_PATRICIA) / CLOCKS_PER_SEC;
                 printf("Insercao PATRICIA concluida\n\n");
             }
         }
 
         // Escolhe imprimir (ordem alfabetica + estatistica de tempo)
         else if (decisao == 'b') {
-            do
-            {
+            do {
                 printf("Qual estrutura voce gostaria de imprimir\n");
                 printf("\n1- Hash\n");
                 printf("2- Patricia\n");
@@ -100,30 +100,73 @@ int main() {
                 printf("Hash apos entrada:\n\n");
                 ImprimeArrayOrdenado(total_elementos_array);
                 printf("Imprimindo tempo da tabela hash...\n\n");
-                printf("%.5f segundos", tempo_total_Hash);
+                printf("%.5f segundos\n", tempo_total_Hash);
             }
             else if(opcao == 2){
                 printf("Imprimindo arvore PATRICIA\n\n");
                 printf("PATRICIA apos entrada:\n\n");
                 ImprimePatricia(arvore);
                 printf("Imprimindo tempo da arvore PATRICIA\n\n");
-                printf("%.5f segundos", tempo_total_PATRICIA);
+                printf("%.5f segundos\n", tempo_total_PATRICIA);
+            }
+        }
+        else if(decisao == 'c') {
+            int subOpcao;
+            printf("\nEscolha o TAD para busca:\n1 - Hash\n2 - Patricia\nDigite a opcao: ");
+            scanf("%d", &subOpcao);
+
+            char termo[20];
+            printf("Digite o termo: ");
+            scanf("%s", termo);
+
+            int numTotalDocs = qtd; 
+            TipoResultadoBusca resultados[numTotalDocs];
+            for(int i = 0; i < numTotalDocs; i++) {
+                resultados[i].idDoc = i + 1;
+                resultados[i].pesoTotal = 0;
             }
 
+            if (subOpcao == 2) { 
+                TipoChave chave;
+                strcpy(chave.chave, termo);
+                TipoArvore no = BuscaNoPatricia(chave, arvore);
+                if (no != NULL) {
+                    int dj = ContaDocumentos(no->NO.NExterno.ocorrencias);
+                    TipoApontadorOcorrencia aux = no->NO.NExterno.ocorrencias.Primeiro->Prox;
+                    while(aux != NULL) {
+                        float peso = CalculaPesoTFIDF(aux->Item.qtde, numTotalDocs, dj);
+                        resultados[aux->Item.idDoc - 1].pesoTotal += peso;
+                        aux = aux->Prox;
+                    }
+                } else printf("Termo nao encontrado.\n");
+            } 
+            else if (subOpcao == 1) { 
+                TipoApontador no = BuscaListaHash(termo, pesos, Tabela);
+                if (no != NULL) {
+                    int dj = 0;
+                    TipoApontador aux = no;
+                    while(aux != NULL && strncmp(termo, aux->Item.Palavra, sizeof(TipoPalavra)) == 0) {
+                        dj++;
+                        aux = aux->Prox;
+                    }
+                    aux = no;
+                    while(aux != NULL && strncmp(termo, aux->Item.Palavra, sizeof(TipoPalavra)) == 0) {
+                        float peso = CalculaPesoTFIDF(aux->Item.qnt, numTotalDocs, dj);
+                        resultados[aux->Item.idDoc - 1].pesoTotal += peso;
+                        aux = aux->Prox;
+                    }
+                } else printf("Termo nao encontrado.\n");
+            }
+            OrdenaResultados(resultados, numTotalDocs);
+            printf("\nRanking de relevancia:\n");
+            for(int i = 0; i < numTotalDocs; i++) {
+                if(resultados[i].pesoTotal > 0)
+                    printf("Arquivo %d: Peso %.4f\n", resultados[i].idDoc, resultados[i].pesoTotal);
+            }
         }
-
-        else if(decisao == 'c') {
-            // busca por ordem de relevancia a ser implementada
+        else if(decisao == 'd') {
+            printf("Saindo...\n");
         }
-
-        else if(decisao == 'd'){
-            printf("Finalizando o programa.\n");
-        }
-
-        else{
-            printf("Opcao invalida! Tente novamente.\n\n");
-        }
-
     } while (decisao != 'd');
 
     return 0;

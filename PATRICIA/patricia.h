@@ -40,6 +40,7 @@ TipoArvore InsereEntrePatricia(TipoChave palavra, TipoArvore *t, int i, int idDo
 TipoArvore PegaPalavraQualquer(TipoArvore t);
 void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc); // A funcao que faz a inserção.
 void ImprimePatricia(TipoArvore p);
+TipoArvore BuscaNoPatricia(TipoChave palavra, TipoArvore t);
 
 
 #endif

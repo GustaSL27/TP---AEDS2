@@ -190,3 +190,16 @@ void ImprimeArrayOrdenado(int total) {
     }
     printf("--------------------------------------\n");
 }
+
+
+TipoApontador BuscaListaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T) {
+    unsigned int i = h(Ch, p);
+    TipoApontador Ap = T[i].Primeiro->Prox;
+    while (Ap != NULL) {
+        if (strncmp(Ch, Ap->Item.Palavra, sizeof(TipoPalavra)) == 0) {
+            return Ap; // Retorna o primeiro nó que contém a palavra
+        }
+        Ap = Ap->Prox;
+    }
+    return NULL;
+}

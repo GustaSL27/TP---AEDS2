@@ -146,3 +146,15 @@ void ImprimePatricia(TipoArvore p){
     ImprimePatricia(p->NO.NInterno.Esq);
     ImprimePatricia(p->NO.NInterno.Dir);
 }
+
+// Função auxiliar para buscar o nó de uma palavra específica
+TipoArvore BuscaNoPatricia(TipoChave palavra, TipoArvore t) {
+    if (t == NULL) return NULL;
+    if (EExterno(t)) {
+        return (strcmp(palavra.chave, t->NO.NExterno.palavra.chave) == 0) ? t : NULL;
+    }
+    if (palavra.chave[t->NO.NInterno.posicao] < t->NO.NInterno.caractere)
+        return BuscaNoPatricia(palavra, t->NO.NInterno.Esq);
+    else
+        return BuscaNoPatricia(palavra, t->NO.NInterno.Dir);
+}
