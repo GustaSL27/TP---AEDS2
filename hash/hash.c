@@ -40,7 +40,7 @@ void Inicializa(TabelaHash T){
   for (i = 0; i < M; i++) FLVazia(&T[i]);
 }
 
-TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T){
+TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T, int *comp){
   /* TipoApontador de retorno aponta para o item anterior da Hash */
   unsigned int i;
   TipoApontador Ap;
@@ -48,16 +48,20 @@ TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T){
   if (Vazia(T[i])) return NULL;  /* Pesquisa sem sucesso */
   else{
     Ap = T[i].Primeiro;
-    while (Ap->Prox != NULL && strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra)))
-      Ap = Ap->Prox;
+    while (Ap->Prox != NULL) {
+        if(comp) (*comp)++;
+        if (!strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra))) break;
+        Ap = Ap->Prox;
+    }
+    
     if (Ap->Prox != NULL && !strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra)))
       return Ap;
     else return NULL;  /* Pesquisa sem sucesso */
   }
 }  
 
-void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total) {
-  TipoApontador Ap = PesquisaUltima(x.Palavra, p, T);
+void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total, int *comp) {
+  TipoApontador Ap = PesquisaUltima(x.Palavra, p, T, comp);
 
   if (Ap == NULL) {
     /* Palavra nunca vista: insere nova célula */
@@ -71,12 +75,15 @@ void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total) {
   } 
   else {
     TipoApontador UltimaCelula = Ap->Prox;
+    
+    if(comp) (*comp)++;
     if (UltimaCelula->Item.idDoc == x.idDoc) {
       /* IdDoc é igual -> incrementa qnt */
       UltimaCelula->Item.qnt++;
       
       // atualiza qnt no vetor também
       for(int i = 0; i < *total; i++) {
+        if(comp) (*comp)++;
         if (Palavras_ordenadas[i].idDoc == x.idDoc && !strncmp(Palavras_ordenadas[i].Palavra, x.Palavra, sizeof(TipoPalavra))) {
           Palavras_ordenadas[i].qnt++;
           break;
@@ -95,6 +102,7 @@ void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total) {
     }
   }
 }
+
 void Imp(ListaEncadeada Hash) {
   TipoApontador Aux;
   Aux = Hash.Primeiro->Prox;
@@ -134,7 +142,7 @@ void LerPalavra(char *p, int Tam){
   for(i=j-1;(i>=0 && p[i]==' ');i--) p[i]='\0';
 }
 
-TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T) {
+TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T, int *comp) {
   unsigned int i = h(Ch, p);
   TipoApontador Ap, Ultimo = NULL;
 
@@ -142,6 +150,7 @@ TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T) {
 
   Ap = T[i].Primeiro;
   while (Ap->Prox != NULL) {
+    if(comp) (*comp)++;
     if (!strncmp(Ch, Ap->Prox->Item.Palavra, sizeof(TipoPalavra)))
       Ultimo = Ap;
     Ap = Ap->Prox;
@@ -192,10 +201,11 @@ void ImprimeArrayOrdenado(int total) {
 }
 
 
-TipoApontador BuscaListaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T) {
+TipoApontador BuscaListaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T, int *comp) {
     unsigned int i = h(Ch, p);
     TipoApontador Ap = T[i].Primeiro->Prox;
     while (Ap != NULL) {
+        if(comp) (*comp)++;
         if (strncmp(Ch, Ap->Item.Palavra, sizeof(TipoPalavra)) == 0) {
             return Ap; // Retorna o primeiro nó que contém a palavra
         }

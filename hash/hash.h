@@ -34,7 +34,7 @@ typedef ListaEncadeada TabelaHash[M];
 extern TipoItem Palavras_ordenadas[MAX_ARRAY];
 
 void InsereArray(TipoItem item, int *total);
-void ImprimeArrayOrdenado();
+void ImprimeArrayOrdenado(int total);
 int comparar_elementos_vetor(const void *a, const void *b);
 
 void FLVazia(ListaEncadeada *Hash);
@@ -42,11 +42,11 @@ short Vazia(ListaEncadeada Hash);
 void GeraPesos(TipoPesos p);
 unsigned int h(TipoPalavra Palavra, TipoPesos p);
 void Inicializa(TabelaHash T);
-TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T);
-void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total);
+TipoApontador PesquisaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T, int *comp);
+void InsereHash(TipoItem x, TipoPesos p, TabelaHash T, int *total, int *comp);
 void Imp(ListaEncadeada Hash);
 void ImprimeHash(TabelaHash Tabela);
 void LerPalavra(char *p, int Tam);
-TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T);
-TipoApontador BuscaListaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T);
+TipoApontador PesquisaUltima(TipoPalavra Ch, TipoPesos p, TabelaHash T, int *comp);
+TipoApontador BuscaListaHash(TipoPalavra Ch, TipoPesos p, TabelaHash T, int *comp);
 #endif

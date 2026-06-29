@@ -35,12 +35,12 @@ void InicializaPatricia(TipoArvore *p);
 short EExterno(TipoArvore p); // Funcao auxiliar para verificar se o nó é externo ou interno.
 TipoArvore CriaNoInt(int i, char c, TipoArvore *Esq,  TipoArvore *Dir); // Funcao que cria um dos nos internos utilizados na comparação.
 TipoArvore CriaNoExt(TipoChave palavra , int idDoc); // Funcao que cria um no externo que armazena uma palavra
-void Pesquisa(TipoChave palavra, TipoArvore t);
-TipoArvore InsereEntrePatricia(TipoChave palavra, TipoArvore *t, int i, int idDoc); // A insereEntre é utilizada depois que achou a posicao que difere as palavras
+void Pesquisa(TipoChave palavra, TipoArvore t, int *comp);
+TipoArvore InsereEntrePatricia(TipoChave palavra, TipoArvore *t, int i, int idDoc, int *comp); // A insereEntre é utilizada depois que achou a posicao que difere as palavras
 TipoArvore PegaPalavraQualquer(TipoArvore t);
-void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc); // A funcao que faz a inserção.
+void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc, int *comp); // A funcao que faz a inserção.
 void ImprimePatricia(TipoArvore p);
-TipoArvore BuscaNoPatricia(TipoChave palavra, TipoArvore t);
+TipoArvore BuscaNoPatricia(TipoChave palavra, TipoArvore t, int *comp);
 
 
 #endif

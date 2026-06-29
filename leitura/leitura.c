@@ -16,8 +16,7 @@ int LerEntrada(char *nomeArquivo) {
     return qtd;
 }
 
-
-void LerFabulasPATRICIA(char *nomeArquivoBase, int qtd, TipoArvore *arvore, TipoArvore arvorestop) {
+void LerFabulasPATRICIA(char *nomeArquivoBase, int qtd, TipoArvore *arvore, TipoArvore arvorestop, int *comp) {
     FILE *arquivo;
     char nomeArquivo[30];
     TipoChave palavra;
@@ -51,13 +50,14 @@ void LerFabulasPATRICIA(char *nomeArquivoBase, int qtd, TipoArvore *arvore, Tipo
 
             strcpy(x.Palavra, palavra.chave);
             x.idDoc = idDoc + 1;
-            InserePatricia(palavra, arvore, idDoc + 1);
+            // Repassa o ponteiro de comparacao para a arvore
+            InserePatricia(palavra, arvore, idDoc + 1, comp);
         }
         fclose(arquivo);
     }
 }
 
-void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, TabelaHash Tabela, TipoPesos pesos, int *total) {
+void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, TabelaHash Tabela, TipoPesos pesos, int *total, int *comp) {
     FILE *arquivo;
     char nomeArquivo[30];
     TipoChave palavra;
@@ -91,7 +91,8 @@ void LerFabulasHash(char *nomeArquivoBase, int qtd, TipoArvore arvorestop, Tabel
 
             strcpy(x.Palavra, palavra.chave);
             x.idDoc = idDoc + 1;
-            InsereHash(x, pesos, Tabela, total);
+            // Repassa o ponteiro de comparacao para a hash
+            InsereHash(x, pesos, Tabela, total, comp);
         }
 
         fclose(arquivo);

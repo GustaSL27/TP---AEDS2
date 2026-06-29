@@ -22,8 +22,7 @@ typedef struct {
 void FLVaziaOcorrencia(TipoListaOcorrencia * Lista);
 int  LEhVaziaOcorrencia(TipoListaOcorrencia  Lista);
 void InsereListaOcorrencia(TipoItemOcorrencia x ,TipoListaOcorrencia *Lista);
-void AtualizaOcorrencia(TipoListaOcorrencia * Lista , int idDoc);
+void AtualizaOcorrencia(TipoListaOcorrencia * Lista , int idDoc, int *comp);
 void ImprimeListaOcorrencia(TipoListaOcorrencia Lista);
-
 
 #endif

@@ -13,7 +13,9 @@ int LerStopWord(char * arquivo_teste, TipoArvore * arvore_stop ){
     }
 
     while (fscanf(arquivo, "%19s", palavra.chave) == 1){
-        InserePatricia(palavra,arvore_stop,0);// idDoc em 0 pois as stopwords nao pertencem a nenhum documento especifico
+        // idDoc em 0 pois as stopwords nao pertencem a nenhum documento especifico
+        // Passa NULL no final para nao contar as comparacoes no benchmark
+        InserePatricia(palavra, arvore_stop, 0, NULL);
     }
 
     fclose(arquivo);

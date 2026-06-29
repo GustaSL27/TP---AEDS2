@@ -19,12 +19,13 @@ void InsereListaOcorrencia(TipoItemOcorrencia x, TipoListaOcorrencia *Lista)
     Lista -> Ultimo -> Prox = NULL;
 }
 
-void AtualizaOcorrencia(TipoListaOcorrencia *Lista, int idDoc) {
+void AtualizaOcorrencia(TipoListaOcorrencia *Lista, int idDoc, int *comp) {
     TipoApontadorOcorrencia Aux;
     Aux = Lista->Primeiro->Prox;  // pula a celula cabeca
     
     // procura se ja existe um par com esse idDoc
     while (Aux != NULL) {
+        if(comp) (*comp)++; // Conta a comparacao do idDoc
         if (Aux->Item.idDoc == idDoc) {
             Aux->Item.qtde++;  //se achou, incrementa
             return;

@@ -42,7 +42,7 @@ TipoArvore CriaNoExt(TipoChave palavra, int idDoc)
     return p;
 }
 
-void Pesquisa(TipoChave palavra, TipoArvore t)
+void Pesquisa(TipoChave palavra, TipoArvore t, int *comp)
 {
     if(t==NULL){
         printf("Arvore Vazia\n");
@@ -50,21 +50,24 @@ void Pesquisa(TipoChave palavra, TipoArvore t)
     }
 
     if (EExterno(t)) // Se chegou em um No externo entao verifica se a palavra q pesquisou é igual a palavra q ta armazenada
-    {   if (strcmp(palavra.chave,t->NO.NExterno.palavra.chave)==0){
+    {   
+        if(comp) (*comp)++;
+        if (strcmp(palavra.chave,t->NO.NExterno.palavra.chave)==0){
         printf("Elemento encontrado: %s\n", t->NO.NExterno.palavra.chave);
         } 
         else printf("Elemento nao encontrado\n");
         return;
     }
+    if(comp) (*comp)++;
     if (palavra.chave[t->NO.NInterno.posicao] < t->NO.NInterno.caractere){//Se a letra q esta na posicao de comparacao da palavra for menor q o caracter comparado entao vai para a esq
-        Pesquisa(palavra,t->NO.NInterno.Esq);
+        Pesquisa(palavra,t->NO.NInterno.Esq, comp);
     } 
-    else Pesquisa(palavra, t->NO.NInterno.Dir); // Se nao pesquisa pro lado dir
+    else Pesquisa(palavra, t->NO.NInterno.Dir, comp); // Se nao pesquisa pro lado dir
 }
 
 
 
-TipoArvore InsereEntrePatricia(TipoChave palavra, TipoArvore *t, int i,int idDoc)
+TipoArvore InsereEntrePatricia(TipoChave palavra, TipoArvore *t, int i,int idDoc, int *comp)
 {
   TipoArvore p;
   TipoArvore repExterno;
@@ -72,16 +75,20 @@ TipoArvore InsereEntrePatricia(TipoChave palavra, TipoArvore *t, int i,int idDoc
   { /* cria um novo no externo */
     p = CriaNoExt(palavra,idDoc);
     repExterno = EExterno(*t) ? *t : PegaPalavraQualquer(*t); // pega um no externo representativo da subarvore, mesmo se *t for interno
+    
+    if(comp) (*comp)++;
     if (palavra.chave[i] > repExterno->NO.NExterno.palavra.chave[i]){//palavra nova é maior  a nova vai pra direita, antiga vai pra esquerda
         return CriaNoInt(i, palavra.chave[i], t, &p);
     }  
     else return (CriaNoInt(i, repExterno->NO.NExterno.palavra.chave[i], &p, t)); //palavra nova é MENOR -> nova vai pra esquerda, antiga vai pra direita
   } 
   else // se a posicao i é maior entao precisa descer a arvore ja que a posição que tem diferença esta mais abaixo
-  { if (palavra.chave[(*t)->NO.NInterno.posicao] >= (*t)->NO.NInterno.caractere) //Aqui vai verificar se irá descer para direita ou para a esq
-    (*t)->NO.NInterno.Dir = InsereEntrePatricia(palavra,&(*t)->NO.NInterno.Dir,i,idDoc);//Se o caracter da palavra na posicao atual for maior ou igual q o caractere divisor entao desce para direita
+  { 
+    if(comp) (*comp)++;
+    if (palavra.chave[(*t)->NO.NInterno.posicao] >= (*t)->NO.NInterno.caractere) //Aqui vai verificar se irá descer para direita ou para a esq
+    (*t)->NO.NInterno.Dir = InsereEntrePatricia(palavra,&(*t)->NO.NInterno.Dir,i,idDoc, comp);//Se o caracter da palavra na posicao atual for maior ou igual q o caractere divisor entao desce para direita
     else
-    (*t)->NO.NInterno.Esq = InsereEntrePatricia(palavra,&(*t)->NO.NInterno.Esq,i,idDoc);//  se nao for desce para esq
+    (*t)->NO.NInterno.Esq = InsereEntrePatricia(palavra,&(*t)->NO.NInterno.Esq,i,idDoc, comp);//  se nao for desce para esq
     return (*t);
   }
 
@@ -97,7 +104,7 @@ TipoArvore PegaPalavraQualquer(TipoArvore t) {
 }
 
 
-void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc)
+void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc, int *comp)
 {
     TipoArvore p;
     int i;
@@ -111,7 +118,9 @@ void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc)
     { 
         p = *t;
         while (!EExterno(p)) // Enquanto nao chegar num no externo vai descer a arvore
-        {   //se o caractere na posicao atual for maior ou igual q o caracter divisor entao vai descer para direita
+        {   
+            if(comp) (*comp)++;
+            //se o caractere na posicao atual for maior ou igual q o caracter divisor entao vai descer para direita
             if (palavra.chave[p->NO.NInterno.posicao] >= p->NO.NInterno.caractere){
                 p = p->NO.NInterno.Dir;
             }// se nao vai descer pra esq
@@ -121,14 +130,16 @@ void InserePatricia(TipoChave palavra, TipoArvore *t, int idDoc)
       // Encontrou o No Ext agora vai achar onde q tem diferença entre a velha e a nova
     i = 0;
     while (palavra.chave[i] != '\0' && palavra.chave[i] == p->NO.NExterno.palavra.chave[i]){ // Esse while vai comparar a palavra nova com a palavra que esta ali no no externo letra por letrar ate encontrar a posicao q tem uma diferença
+        if(comp) (*comp)++;
         i++;
     } 
       
+    if(comp) (*comp)++;
     if (strcmp(palavra.chave,p->NO.NExterno.palavra.chave)==0) { // Se as palavras forem iguais entao ja está na arvore
-        AtualizaOcorrencia(&p->NO.NExterno.ocorrencias, idDoc); // chama a atualizaOcorrencia para somar a quantidade
+        AtualizaOcorrencia(&p->NO.NExterno.ocorrencias, idDoc, comp); // chama a atualizaOcorrencia para somar a quantidade
         return; 
     } 
-    else {*t = InsereEntrePatricia(palavra, t, i,idDoc);}// Se nao chama a InsereEntre pra inserir na posicao q tem a diferença
+    else {*t = InsereEntrePatricia(palavra, t, i,idDoc, comp);}// Se nao chama a InsereEntre pra inserir na posicao q tem a diferença
    }
 }
 
@@ -148,13 +159,15 @@ void ImprimePatricia(TipoArvore p){
 }
 
 // Função auxiliar para buscar o nó de uma palavra específica
-TipoArvore BuscaNoPatricia(TipoChave palavra, TipoArvore t) {
+TipoArvore BuscaNoPatricia(TipoChave palavra, TipoArvore t, int *comp) {
     if (t == NULL) return NULL;
     if (EExterno(t)) {
+        if(comp) (*comp)++;
         return (strcmp(palavra.chave, t->NO.NExterno.palavra.chave) == 0) ? t : NULL;
     }
+    if(comp) (*comp)++;
     if (palavra.chave[t->NO.NInterno.posicao] < t->NO.NInterno.caractere)
-        return BuscaNoPatricia(palavra, t->NO.NInterno.Esq);
+        return BuscaNoPatricia(palavra, t->NO.NInterno.Esq, comp);
     else
-        return BuscaNoPatricia(palavra, t->NO.NInterno.Dir);
+        return BuscaNoPatricia(palavra, t->NO.NInterno.Dir, comp);
 }
