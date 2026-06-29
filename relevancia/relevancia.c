@@ -8,7 +8,7 @@ float CalculaPesoTFIDF(int freqTermo, int numDocsColecao, int numDocsComTermo) {
     //numDocsColecao é o total de fabulas
     //numDocsComTermo é o total de fabulas diferentes que contem a palavra buscada
     float idf = log2((float)numDocsColecao / (float)numDocsComTermo);
-    return (float)freqTermo * idf;
+    return (float)freqTermo * idf; // retorna a relevancia do termo
 }
 
 // Ordena o vetor de resultados em ordem decrescente de peso. 

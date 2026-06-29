@@ -1,3 +1,5 @@
+// MÁRCIO PAULINO, GUSTAVO SOUZA, MATHEUS GONÇALVES SANTOS , PEDRO MOURA SIMOES
+
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>

@@ -1,11 +1,12 @@
+// MÁRCIO PAULINO, GUSTAVO SOUZA, MATHEUS GONÇALVES SANTOS , PEDRO MOURA SIMOES
 #ifndef RELEVANCIA_H
 #define RELEVANCIA_H
 
 #include "../PATRICIA/lista/lista.h" // Precisa acessar a estrutura de lista
 
 typedef struct {
-    int idDoc;
-    float pesoTotal;
+    int idDoc; //idDoc da fábula
+    float pesoTotal; //relevancia
 } TipoResultadoBusca;
 
 // Função que calcula o peso de um termo específico em um documento
